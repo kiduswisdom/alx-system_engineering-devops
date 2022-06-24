@@ -1,2 +1,9 @@
 #!/bin/bash
 echo '' > hello
+log_file="/tmp/my_app_debug.log"
+
+>${log_file}
+
+/path/to/my_tomcat_app 
+
+wait
