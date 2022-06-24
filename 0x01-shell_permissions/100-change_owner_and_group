@@ -1,3 +1,3 @@
 #!/bin/bash
-chown {vincent:staff} {directory} -R
-chown -R vincent:staff file
+chown vincent:staff dir
+chown vincent:staff file
