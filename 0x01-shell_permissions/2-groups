@@ -1,3 +1,2 @@
 #!/bin/bash
-
--G all groups
+groups
