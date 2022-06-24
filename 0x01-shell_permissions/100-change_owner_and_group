@@ -1,3 +1,3 @@
 #!/bin/bash
-chmod a+X * 
-chown vincent: chgrp: staff 
+chown {vincent:staff} {directory} -R
+chown -R vincent:staff file
