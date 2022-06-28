@@ -1,2 +1,2 @@
-#shell I/O Redirection and filtering 
-0. Hello world- > write tthe script that prints "Hello, world", fellowed by a new line to the standard output. 
+#Shell I/O Redirection and filtering 
+0. Hello world- > Write a script that prints “Hello, World”, followed by a new line to the standard output.
