@@ -1,8 +1,3 @@
 #!/bin/bash
-find . -type f -empty -print -delete
-./empty-file1
-./empty-file2
-./empty-file3
-./mydir1/empty-file5
-./mydir2/empty-file6
-./empty file 4
+#find . -type f -empty -print -delete
+find ~/list \( -empty -o \( -type f -a ! -exec grep -qm1 '[^[:blank:]]' {} \; \) \) -exec ls -Fd {} \;
