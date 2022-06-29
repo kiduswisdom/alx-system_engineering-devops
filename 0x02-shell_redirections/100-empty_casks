@@ -1,3 +1,2 @@
 #!/bin/bash
-#find . -type f -empty -print -delete
-find ~/list \( -empty -o \( -type f -a ! -exec grep -qm1 '[^[:blank:]]' {} \; \) \) -exec ls -Fd {} \;
+find . -type f -empty -print -delete
