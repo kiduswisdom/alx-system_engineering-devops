@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-# Kill a process 2
-pkill pgrep -f 4-to_infinity_and_beyond
+# This is a script that stops 4-to_infinity_and_beyond process
+
+pkill -f 4-to_infinity_and_beyond
