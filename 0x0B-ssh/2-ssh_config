@@ -1,5 +1,4 @@
- SendEnv LANG LC_*
-    HashKnownHosts yes
-    GSSAPIAuthentication yes
-    PasswordAuthentication no
-    IdentityFile ~/.ssh/holberton
+# ssh config file
+Host *
+	PasswordAuthentication no
+	IdentifyFile ~/.ssh/school
