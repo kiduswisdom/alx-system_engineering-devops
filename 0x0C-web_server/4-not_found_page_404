@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
-#Configure your Nginx server to have a custom 404 page that contains the string
+# script that creates an nginx web server
 
-sudo apt-get update
-sudo apt-get install -y nginx
-echo "Holberton School" | sudo tee /var/www/html/index.html
-new_string="listen 80 default_server;\n\trewrite ^\/redirect_me https:\/\/www.youtube.com\/watch?v=xJJsoquu70o permanent;"
-sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-available/default
-echo "Ceci n'est pas une page\n" | sudo tee /var/www/html/404.html
-new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
-sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-available/default
-
+sudo apt-get -y update
+# Install nginx server
+sudo apt-get -y install nginx
+# Firewall port 80
+sudo ufw allow 'Nginx HTTP'
+# Create index file
+echo "Holberton School" > /var/www/html/index.html
+# Redirection configuration
+sudo sed -i "/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=dQw4w9WgXcQ permanent;" /etc/nginx/sites-available/default
+# Custom page 404
+echo "Ceci n'est pas une page" > /usr/share/nginx/html/custom_404.html
+# Error page 404
+sudo sed -i "/listen 80 default_server/a error_page 404 /custom_404.html;\n \t location = /custom_404.html {\n \t\t root /usr/share/nginx/html;\n \t\t internal;\n \t}" /etc/nginx/sites-available/default
+# Restart server to apply changes
 sudo service nginx restart

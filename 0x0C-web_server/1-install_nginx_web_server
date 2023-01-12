@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-#install nginx and create index.html file with Hello World text
+# script that creates an nginx web server
 
-sudo apt update
+sudo apt-get -y update
 sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
-sudo echo "Hello World!" | sudo tee file /var/www/html/index.html
-sudo service nginx restart
+echo "Holberton School" > /var/www/html/index.nginx-debian.html
+sudo service nginx start

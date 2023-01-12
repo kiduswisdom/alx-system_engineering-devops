@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
-# Script that configures a new Ubuntu machine to respect above requirements
+# script that creates an nginx web server
 
-sudo apt-get update
-sudo apt-get install -y nginx
-
-echo "Holberton School" | sudo tee /var/www/html/index.html
-new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.youtube.com\/watch?v=xJJsoquu70o permanent;"
-sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
-
+sudo apt-get -y update
+# Install nginx server
+sudo apt-get -y install nginx
+# Firewall port 80
+sudo ufw allow 'Nginx HTTP'
+# Create index file
+echo "Holberton School" > /var/www/html/index.html
+# Redirection configuration
+sudo sed -i "/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=dQw4w9WgXcQ permanent;" /etc/nginx/sites-available/default
+# Restart server to apply changes
 sudo service nginx restart
