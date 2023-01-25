@@ -1,31 +1,18 @@
 #!/usr/bin/env bash
-#
-# Usage: 1-world_wide_web DOMAIN [SUBDOMAIN ...]
-#
-# Audit fully-qualified domain names for AirBnB clone
-#
-# If subdomains are given, they will be audited in the order provided.
-# Otherwise the subdomains 'www', 'lb-01', 'web-01', and 'web-02' will
-# be audited (in the order listed).
+#Configure your domain zone so that the subdomain www and display information about subdomains
 
-function audit
-{
-    dig "$2.$1" | awk -v "subdomain=$2" '/ANSWER SECTION/ {getline; print "The subdomain " subdomain " is a " $4 " record and points to " $5}'
-    
-}
-
-case "$#" in
-    0)  printf 'Usage: %s DOMAIN [SUBDOMAIN ...]\n' "${BASH_SOURCE[0]##*/}" >&2
-        exit 1
-        ;;
-    1)  set -- 'www' 'lb-01' 'web-01' 'web-02' "$1"
-        ;;
-    *)  set -- "${@:2}" "$1"
-        ;;
-esac
-
-while (( $# > 1 ))
-do
-    audit "${!#}" "$1"
-    shift
-done
+if [ "$#" = 1 ]
+then
+    subdomains=("www" "lb-01" "web-01" "web-02")
+    for sub_domain in "${subdomains[@]}"
+    do
+	record_type=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+        destination=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+	echo "The subdomain $sub_domain is a $record_type record and points to $destination"
+    done
+elif [ "$#" = 2 ]
+then
+    record_type=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+    destination=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+    echo "The subdomain $2 is a $record_type record and points to $destination"
+fi
