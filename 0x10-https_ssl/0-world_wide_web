@@ -1,23 +1,31 @@
 #!/usr/bin/env bash
-# display information about subdomains
-# domains and subdomains to be passed as arguments to script
+#
+# Usage: 1-world_wide_web DOMAIN [SUBDOMAIN ...]
+#
+# Audit fully-qualified domain names for AirBnB clone
+#
+# If subdomains are given, they will be audited in the order provided.
+# Otherwise the subdomains 'www', 'lb-01', 'web-01', and 'web-02' will
+# be audited (in the order listed).
 
-# function for extracting domain and subdomain details from dig
-
-findRecords ()
+function audit
 {
-    r_type="$(dig ${2}.${1} | awk 'NR==14 { print $4 }')"
-    ip_add="$(dig ${2}.${1} | awk 'NR==14 { print $5 }')"
-
-    echo "The subdomain $2 is a $r_type record and points to $ip_add"
+    dig "$2.$1" | awk -v "subdomain=$2" '/ANSWER SECTION/ {getline; print "The subdomain " subdomain " is a " $4 " record and points to " $5}'
+    
 }
 
-if [ "$#" -ne 2 ];
-then
-    findRecords $1 "www"
-    findRecords $1 "lb-01"
-    findRecords $1 "web-01"
-    findRecords $1 "web-02"
-else
-    findRecords $1 $2
-fi
+case "$#" in
+    0)  printf 'Usage: %s DOMAIN [SUBDOMAIN ...]\n' "${BASH_SOURCE[0]##*/}" >&2
+        exit 1
+        ;;
+    1)  set -- 'www' 'lb-01' 'web-01' 'web-02' "$1"
+        ;;
+    *)  set -- "${@:2}" "$1"
+        ;;
+esac
+
+while (( $# > 1 ))
+do
+    audit "${!#}" "$1"
+    shift
+done
