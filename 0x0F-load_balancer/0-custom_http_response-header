@@ -1,30 +1,38 @@
 #!/usr/bin/env bash
-# Configure a Nginx server with a custom HTTP header and two web pages.
+# Configures my nginx server and add a custom header
 
-# Install Nginx
-apt update
-apt -y install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
 
-# Set hostname
-hostname -b $(hostnamectl --static)
+sudo chown -R "$USER":"$USER" /var/www/html/index.nginx-debian.html
+sudo chown -R "$USER":"$USER" /etc/nginx/sites-available/default
+sudo chown -R "$USER":"$USER" /var/www/html
 
-# Configure Nginx server
-echo 'server {
-    listen 80;
-    listen [::]:80 default_server;
-    root   /var/www/html;
-    index  index.html;
-    location /redirect_me {
-        return 301 https://www.youtube.com/c/JustinMasayda;
-    }
-    error_page 404 /404.html;
-    add_header X-Served-By $HOSTNAME;
-}' > /etc/nginx/sites-available/default
-
-# Create website files
-mkdir -p /var/www/html
-echo "Holberton School for the win!" > /var/www/html/index.html
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-# Launch Nginx server
-nginx
+config=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+               root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+	add_header X-Served-By \$hostname;
+        location / {
+		try_files \$uri \$uri/ =404;
+        }
+        error_page 404 /404.html;
+        location  /404.html {
+            internal;
+        }
+        
+        if (\$request_filename ~ redirect_me){
+            rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
+        }
+}"
+
+echo -e "$config" > /etc/nginx/sites-enabled/default
+
+sudo service nginx restart
