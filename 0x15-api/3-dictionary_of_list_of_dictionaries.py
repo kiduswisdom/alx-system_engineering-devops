@@ -1,77 +1,23 @@
 #!/usr/bin/python3
-
-
-
 """
-
-Python script that exports data in the JSON format.
-
+export data in json format
 """
-
-
-
-from requests import get
 
 import json
-
-
+import requests
 
 if __name__ == "__main__":
-
-    response = get('https://jsonplaceholder.typicode.com/todos/')
-
-    data = response.json()
-
-
-
-    row = []
-
-    response2 = get('https://jsonplaceholder.typicode.com/users')
-
-    data2 = response2.json()
-
-
-
-    new_dict1 = {}
-
-
-
-    for j in data2:
-
-
-
-        row = []
-
-        for i in data:
-
-
-
-            new_dict2 = {}
-
-
-
-            if j['id'] == i['userId']:
-
-
-
-                new_dict2['username'] = j['username']
-
-                new_dict2['task'] = i['title']
-
-                new_dict2['completed'] = i['completed']
-
-                row.append(new_dict2)
-
-
-
-        new_dict1[j['id']] = row
-
-
-
-    with open("todo_all_employees.json",  "w") as f:
-
-
-
-        json_obj = json.dumps(new_dict1)
-
-        f.write(json_obj)
+    url = "https://jsonplaceholder.typicode.com/"
+    users = requests.get("{}users".format(url)).json()
+    userj = {}
+    for user in users:
+        userId = user.get("id")
+        username = user.get("username")
+        todos = requests.get("{}users/{}/todos".format(url, userId)).json()
+        t = [{"username": username,
+              "task": t.get("title"),
+              "completed": t.get("completed"),
+              } for t in todos]
+        userj[userId] = t
+    with open("todo_all_employees.json", 'w') as filejs:
+        json.dump(userj, filejs)
