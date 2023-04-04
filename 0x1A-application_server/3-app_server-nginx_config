@@ -1,31 +1,25 @@
 server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+    listen 80;
+    server_name 127.0.0.1 35.190.188.208;
 
-        server_name _;
-        rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
-        error_page 404 /custom_404.html;
-        index index.html index.htm;
-        error_page 404 /404.html;
-        add_header X-Served-By $hostname;
+    location /airbnb-onepage/ {
+        include proxy_params;
+	proxy_pass http://localhost:5000/airbnb-onepage/;
+    }
 
-        location / {
-                root /var/www/html/;
-                try_files $uri $uri/ =404;
-        }
+    location /airbnb-dynamic/number_odd_or_even/ {
+        rewrite /airbnb-dynamic/(.*) $1 break;
+        include proxy_params;
+	proxy_pass http://localhost:5001/number_odd_or_even;
+    }
 
+    location /api/ {
+        include proxy_params;
+	proxy_pass http://localhost:5002/api/;
+    }
 
-        location /airbnb-onepage/ {
-                proxy_pass http://localhost:5001;
-        }
-
-        location /airbnb-dynamic/number_odd_or_even/ {
-                include proxy_params;
-                proxy_pass http://0.0.0.0:5001/number_odd_or_even/;
-        }
-
-        location = /404.html {
-                root /var/www/error/;
-                internal;
-        }
+    location / {
+        include proxy_params;
+	proxy_pass http://localhost:5003/;
+    }
 }
